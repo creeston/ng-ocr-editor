@@ -6,10 +6,16 @@
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
+    "strictPropertyInitialization": false,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "paths": {
+      "ng-ocr-editor-component": [
+        "./dist/ng-ocr-editor-component"
+      ]
+    },
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
