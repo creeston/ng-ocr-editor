@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NgOcrEditorComponent } from '../../../ng-ocr-editor-component/src/public-api';
-import { BoundingBoxStyle, OcrDocument } from '../../../ng-ocr-editor-component/src/lib/marked-menu';
+import { NgOcrEditorComponent } from '../../../ng-ocr-editor/src/public-api';
+import { BoundingBoxStyle, OcrDocument } from '../../../ng-ocr-editor/src/lib/marked-menu';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';

@@ -3,23 +3,23 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-ocr-editor-component": {
+    "ng-ocr-editor": {
       "projectType": "library",
-      "root": "projects/ng-ocr-editor-component",
-      "sourceRoot": "projects/ng-ocr-editor-component/src",
+      "root": "projects/ng-ocr-editor",
+      "sourceRoot": "projects/ng-ocr-editor/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/ng-ocr-editor-component/ng-package.json"
+            "project": "projects/ng-ocr-editor/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-ocr-editor-component/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ng-ocr-editor/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ng-ocr-editor-component/tsconfig.lib.json"
+              "tsConfig": "projects/ng-ocr-editor/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,7 +27,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/ng-ocr-editor-component/tsconfig.spec.json",
+            "tsConfig": "projects/ng-ocr-editor/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

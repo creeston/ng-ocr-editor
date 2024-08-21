@@ -6,8 +6,8 @@
     "outDir": "../../out-tsc/app",
     "types": [],
     "paths": {
-      "ng-ocr-editor-component": [
-        "./dist/ng-ocr-editor-component"
+      "ng-ocr-editor": [
+        "./dist/ng-ocr-editor"
       ]
     }
   },
