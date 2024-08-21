@@ -1,19 +1,18 @@
-import { OcrLine } from './marked-menu';
-import { MenuProvider, PageProvider } from './providers';
+import { OcrBox } from './marked-menu';
+import { MenuProvider } from './providers';
 
 export class LineController {
   deletedLines: string[] = [];
   historicalActions: any[] = [];
 
-  constructor(private menu: MenuProvider, private page: PageProvider) { }
+  constructor(private menu: MenuProvider) {}
 
   mergeSelection() {
     if (!this.menu.value) {
       return;
     }
-    let pageIndex = this.page.current;
-    let markup = this.menu.value.pages[pageIndex].markup;
-    let selection = markup.filter((l: OcrLine) => l.editSelected);
+    let markup = this.menu.value.markup;
+    let selection = markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -49,27 +48,19 @@ export class LineController {
       y1: y1,
       y2: y2,
       editSelected: true,
-      viewSelected: true,
-      hover: false,
+      viewToggled: true,
+      hovered: false,
       children: selection,
-    } as OcrLine;
+    } as OcrBox;
 
-    let insertIndex = this.menu.value.pages[pageIndex].markup.indexOf(selection[0]);
-    this.menu.value.pages[pageIndex].markup = this.menu.value.pages[
-      pageIndex
-    ].markup.filter((item: any) => !item.editSelected);
-    this.menu.value.pages[pageIndex].markup.splice(insertIndex, 0, line);
+    let insertIndex = this.menu.value.markup.indexOf(selection[0]);
+    this.menu.value.markup = this.menu.value.markup.filter((item: any) => !item.editSelected);
+    this.menu.value.markup.splice(insertIndex, 0, line);
 
-    this.historicalActions.push(() =>
-      this.reverseMergeSelection(line, selectionIndexes, pageIndex)
-    );
+    this.historicalActions.push(() => this.reverseMergeSelection(line, selectionIndexes));
   }
 
-  reverseMergeSelection(
-    line: OcrLine,
-    selectionIndexes: number[],
-    pageIndex: number
-  ) {
+  reverseMergeSelection(line: OcrBox, selectionIndexes: number[]) {
     if (!this.menu.value) {
       return;
     }
@@ -77,21 +68,21 @@ export class LineController {
     if (!selection) {
       return;
     }
-    let currentMarkup = this.menu.value.pages[pageIndex].markup;
+    let currentMarkup = this.menu.value.markup;
     currentMarkup = currentMarkup.filter((l: any) => l !== line);
     for (let i = 0; i < selectionIndexes.length; i += 1) {
       let index = selectionIndexes[i];
       let line = selection[i];
       line.editSelected = false;
-      line.hover = false;
+      line.hovered = false;
       currentMarkup.splice(index, 0, line);
     }
-    this.menu.value.pages[pageIndex].markup = currentMarkup;
+    this.menu.value.markup = currentMarkup;
   }
 
-  initializeLine(line: OcrLine) {
+  initializeLine(line: OcrBox) {
     line.editSelected = false;
-    line.hover = false;
+    line.hovered = false;
     line.text = line.text?.toLowerCase() ?? '';
     return line;
   }
@@ -100,11 +91,10 @@ export class LineController {
     if (!this.menu.value) {
       return;
     }
-    let pageIndex = this.page.current;
     let line: any = {};
     if (index < 0) {
-      if (this.menu.value.pages[pageIndex].markup.length > 0) {
-        let baseLine = this.menu.value.pages[pageIndex].markup[0];
+      if (this.menu.value.markup.length > 0) {
+        let baseLine = this.menu.value.markup[0];
         var x1 = baseLine.x1;
         var x2 = baseLine.x2;
         var y1 = Math.max(10, baseLine.y1 - 20);
@@ -131,9 +121,9 @@ export class LineController {
         tag: 'DISH',
         children: [],
       };
-      this.menu.value.pages[pageIndex].markup.unshift(line);
+      this.menu.value.markup.unshift(line);
     } else {
-      let baseLine = this.menu.value.pages[pageIndex].markup[index];
+      let baseLine = this.menu.value.markup[index];
       let baseLineHeight = baseLine.y2 - baseLine.y1;
       line = {
         text: '',
@@ -151,48 +141,41 @@ export class LineController {
         tag: 'DISH',
         children: [],
       };
-      this.menu.value.pages[pageIndex].markup.splice(index + 1, 0, line);
+      this.menu.value.markup.splice(index + 1, 0, line);
       baseLine.editSelected = false;
     }
 
-    this.historicalActions.push(() => this.reverseAddLine(line, pageIndex));
+    this.historicalActions.push(() => this.reverseAddLine(line));
   }
 
-  reverseAddLine(line: OcrLine, pageIndex: any) {
+  reverseAddLine(line: OcrBox) {
     if (!this.menu.value) {
       return;
     }
-    let markup = this.menu.value.pages[pageIndex].markup;
-    this.menu.value.pages[pageIndex].markup = markup.filter(
-      (item: any) => item !== line
-    );
+    let markup = this.menu.value.markup;
+    this.menu.value.markup = markup.filter((item: any) => item !== line);
   }
 
-  removeLine(line: OcrLine) {
+  removeLine(line: OcrBox) {
     if (!this.menu.value) {
       return;
     }
-    let currentMarkup = this.menu.value.pages[this.page.current].markup;
+    let currentMarkup = this.menu.value.markup;
     let index = currentMarkup.indexOf(line);
-    this.menu.value.pages[this.page.current].markup = currentMarkup.filter(
-      (item: any) => item !== line
-    );
+    this.menu.value.markup = currentMarkup.filter((item: any) => item !== line);
     this.deletedLines.push(line.text ?? '');
-    let pageIndex = this.page.current;
-    this.historicalActions.push(() =>
-      this.reverseRemoveLine(line, index, pageIndex)
-    );
+    this.historicalActions.push(() => this.reverseRemoveLine(line, index));
   }
 
-  reverseRemoveLine(line: OcrLine, index: number, pageIndex: number) {
+  reverseRemoveLine(line: OcrBox, index: number) {
     if (!this.menu.value) {
       return;
     }
-    let currentMarkup = this.menu.value.pages[pageIndex].markup;
+    let currentMarkup = this.menu.value.markup;
     line.editSelected = false;
-    line.hover = false;
+    line.hovered = false;
     currentMarkup.splice(index, 0, line);
-    this.menu.value.pages[pageIndex].markup = currentMarkup;
+    this.menu.value.markup = currentMarkup;
     this.deletedLines.pop();
   }
 
@@ -200,7 +183,7 @@ export class LineController {
     if (!this.menu.value) {
       return;
     }
-    this.menu.value.pages[this.page.current].markup.forEach((line: any) => {
+    this.menu.value.markup.forEach((line: any) => {
       line.editSelected = true;
     });
   }
@@ -209,7 +192,7 @@ export class LineController {
     if (!this.menu.value) {
       return;
     }
-    this.menu.value.pages[this.page.current].markup.forEach((line: any) => {
+    this.menu.value.markup.forEach((line: any) => {
       line.editSelected = false;
     });
   }
@@ -219,22 +202,19 @@ export class LineController {
       return;
     }
     let actions: any[] = [];
-    let pageIndex = this.page.current;
-    let currentMarkup = this.menu.value.pages[pageIndex].markup;
+    let currentMarkup = this.menu.value.markup;
     for (let i = currentMarkup.length - 1; i >= 0; i -= 1) {
       let line = currentMarkup[i];
       if (!line.editSelected) {
         continue;
       }
       this.deletedLines.push(line.text ?? '');
-      actions.push(() => this.reverseRemoveLine(line, i, pageIndex));
+      actions.push(() => this.reverseRemoveLine(line, i));
     }
 
     actions.reverse();
 
-    this.menu.value.pages[pageIndex].markup = this.menu.value.pages[
-      pageIndex
-    ].markup.filter((item: any) => !item.editSelected);
+    this.menu.value.markup = this.menu.value.markup.filter((item: any) => !item.editSelected);
     this.historicalActions.push(() => {
       actions.forEach((a) => a());
     });
@@ -247,7 +227,7 @@ export class LineController {
 
     if (line.editSelected) {
       let value = line[prop];
-      this.menu.value.pages[this.page.current].markup.forEach((l: any) => {
+      this.menu.value.markup.forEach((l: any) => {
         if (l.editSelected) {
           l[prop] = value;
         }
@@ -261,5 +241,9 @@ export class LineController {
     }
     let action = this.historicalActions.pop();
     action();
+  }
+
+  anyActionsToRollback() {
+    return this.historicalActions.length > 0;
   }
 }

@@ -1,44 +1,19 @@
-import { Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core';
-import {
-  MenuProvider,
-  ModeProvider,
-  PageProvider,
-  PagesProvider,
-  SelectionProvider,
-} from './providers';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MenuProvider, ModeProvider, SelectionProvider } from './providers';
 import { CanvasDrawer } from './canvas-drawer';
 import { CanvasController } from './canvas-controller';
 import { SelectionController } from './selection-controller';
 import { LineController } from './line-controller';
-import { OcrLine, OcrDocument } from './marked-menu';
+import { BoundingBoxStyle, OcrBox, OcrDocument } from './marked-menu';
 import { DrawService } from './draw.service';
 import { CommonModule } from '@angular/common';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 
 const ZOOM_INCREMENT = 25;
 
 @Component({
   selector: 'ng-ocr-editor-component',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatButtonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatTableModule,
-    MatInputModule,
-    MatTooltipModule,
-  ],
+  imports: [CommonModule],
   providers: [DrawService],
   templateUrl: './ng-ocr-editor.component.html',
   styleUrls: ['./ng-ocr-editor.component.scss'],
@@ -46,27 +21,22 @@ const ZOOM_INCREMENT = 25;
 export class NgOcrEditorComponent {
   canvasHeight: number = 80;
 
-  @Input() menu: OcrDocument;
+  @Input({ required: true }) menu: OcrDocument;
+  @Output() menuChange = new EventEmitter<OcrDocument>();
+
+  @Input() mode: 'edit' | 'view' = 'edit';
+  @Input({ required: true }) boundingBoxStyle: BoundingBoxStyle;
 
   origialMenu: OcrDocument | null = null;
 
   menuProvider: MenuProvider = new MenuProvider();
-  page: PageProvider = new PageProvider();
-  pagesProvider: PagesProvider = new PagesProvider();
-  selection: SelectionProvider = new SelectionProvider(
-    this.page,
-    this.menuProvider,
-    this.pagesProvider
-  );
-  mode: ModeProvider = new ModeProvider();
+  selection: SelectionProvider = new SelectionProvider(this.menuProvider);
+  modeProvider: ModeProvider = new ModeProvider();
 
   canvasDrawer: CanvasDrawer | null = null;
   canvasController: CanvasController | null = null;
   selectionController: SelectionController | null = null;
-  lineController: LineController = new LineController(
-    this.menuProvider,
-    this.page
-  );
+  lineController: LineController = new LineController(this.menuProvider);
 
   markupedSavedMessage = '';
   closeText = '';
@@ -76,61 +46,26 @@ export class NgOcrEditorComponent {
 
   saveDisabled: boolean = false;
 
-  displayedColumns = ['position', 'name', 'presence'];
-  primaryColors: string[] = [
-    '#3f51b5',
-    '#da5167',
-    '#45606f',
-    '#704b4b',
-    '#4caf50',
-    '#e6c026',
-  ];
-
-  constructor(
-    private draw: DrawService,
-  ) {
-    this.canvasDrawer = new CanvasDrawer(
-      this.draw,
-      this.mode,
-      this.page,
-      this.menuProvider,
-      this.pagesProvider
-    );
-    this.canvasController = new CanvasController(
-      this.mode,
-      this.page,
-      this.canvasDrawer,
-      this.menuProvider
-    );
-    this.selectionController = new SelectionController(
-      this.canvasDrawer,
-      this.page,
-      this.canvasController,
-      this.menuProvider
-    );
-  }
+  constructor(private draw: DrawService) {}
 
   ngAfterViewInit() {
+    this.canvasDrawer = new CanvasDrawer(this.draw, this.modeProvider, this.menuProvider, this.boundingBoxStyle);
+    this.canvasController = new CanvasController(this.modeProvider, this.canvasDrawer, this.menuProvider);
+    this.selectionController = new SelectionController(this.canvasDrawer, this.canvasController, this.menuProvider);
+
     this.canvasController?.setCanvas(this.canvasRef);
     this.canvasDrawer?.setElements(this.canvasRef, this.imageCanvasRef);
     this.menuProvider.setMenu(this.menu);
-    this.pagesProvider.setPages(this.menu.pages);
     this.origialMenu = JSON.parse(JSON.stringify(this.menu));
-    this.mode.switchToEdit();
+    if (this.mode == 'view') {
+      this.modeProvider.switchToView();
+    } else {
+      this.modeProvider.switchToEdit();
+    }
     this.redrawCanvas();
   }
 
-  async loadImageAsync(imageUrl: string): Promise<HTMLImageElement> {
-    let image = new Image();
-    image.src = imageUrl;
-    return new Promise((resolve, reject) => {
-      image.onload = () => {
-        resolve(image);
-      }
-    });
-  }
-
-  flatChildrenLines(line: OcrLine) {
+  flatChildrenLines(line: OcrBox) {
     if (!line.children || line.children.length == 0) {
       return [line];
     } else {
@@ -143,7 +78,7 @@ export class NgOcrEditorComponent {
     }
   }
 
-  removeLine(line: OcrLine) {
+  removeLine(line: OcrBox) {
     this.lineController.removeLine(line);
     this.redrawCanvas();
   }
@@ -177,27 +112,39 @@ export class NgOcrEditorComponent {
     this.redrawCanvas();
   }
 
-  onCoordChange(event: any, line: OcrLine, lineIndex: number, prop: any) {
+  onCoordChange(event: any, line: OcrBox, lineIndex: number, prop: any) {
     this.lineController.onCoordChange(event, line, lineIndex, prop);
     this.redrawCanvas();
   }
 
   redrawCanvas(changePage: boolean = false) {
-    this.canvasDrawer?.redrawCanvas(
-      this.canvasController!.selectionBox,
-      changePage
-    );
+    this.canvasDrawer?.redrawCanvas(this.canvasController!.selectionBox, changePage);
   }
 
   resetMarkup() {
-    if (this.origialMenu) {
-      this.menuProvider.setMenu(this.origialMenu);
+    if (!this.origialMenu) {
+      return;
     }
+
+    const image = this.menu.imageElement;
+    this.menu = JSON.parse(JSON.stringify(this.origialMenu));
+    this.menu.imageElement = image;
+    this.menuProvider.setMenu(this.menu);
+    this.menuChange.emit(this.menu);
+    this.redrawCanvas();
   }
 
   rollback() {
     this.lineController.rollback();
     this.redrawCanvas();
+  }
+
+  anyActionsToRollback() {
+    return this.lineController.anyActionsToRollback();
+  }
+
+  isAnySelected() {
+    return this.selection.isAnySelected();
   }
 
   zoomIn() {
@@ -219,12 +166,52 @@ export class NgOcrEditorComponent {
   }
 
   toViewMode() {
-    this.mode.switchToView();
+    this.modeProvider.switchToView();
     this.redrawCanvas();
   }
 
   toEditMode() {
-    this.mode.switchToEdit();
+    this.modeProvider.switchToEdit();
     this.redrawCanvas();
+  }
+
+  isEdit() {
+    return this.modeProvider.isEdit();
+  }
+
+  isView() {
+    return this.modeProvider.isView();
+  }
+
+  moveSelectionUp() {
+    this.selectionController?.moveUp();
+  }
+
+  moveSelectionDown() {
+    this.selectionController?.moveDown();
+  }
+
+  moveSelectionLeft() {
+    this.selectionController?.moveLeft();
+  }
+
+  moveSelectionRight() {
+    this.selectionController?.moveRight();
+  }
+
+  moveSelectionUp2() {
+    this.selectionController?.moveUp2();
+  }
+
+  moveSelectionDown2() {
+    this.selectionController?.moveDown2();
+  }
+
+  moveSelectionLeft2() {
+    this.selectionController?.moveLeft2();
+  }
+
+  moveSelectionRight2() {
+    this.selectionController?.moveRight2();
   }
 }

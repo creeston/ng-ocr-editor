@@ -1,32 +1,34 @@
 import { Injectable } from '@angular/core';
+import { ViewStyle } from './marked-menu';
 
 @Injectable()
 export class DrawService {
-  drawStopDish(
+  drawBox(
     context: any,
     x: number,
     y: number,
     w: number,
     h: number,
-    stopStyle: string,
-    stopColor: string
+    viewStyle: ViewStyle,
   ) {
     context.beginPath();
-    if (stopStyle == 'underline') {
-      let opacityColor = this.addAlpha(stopColor, 0.9);
+    if (viewStyle.style == 'fill') {
+      let opacityColor = this.addAlpha(viewStyle.color, 0.8);
       context.fillStyle = opacityColor;
       context.lineWidth = 1;
-      context.strokeStyle = stopColor;
+      context.strokeStyle = viewStyle.color;
       context.rect(x, y, w, h);
       context.fill();
       context.stroke();
-
-      // let strokePosition = y + Math.floor(h/2);
-      // context.moveTo(x, strokePosition);
-      // context.lineTo(x + w, strokePosition);
-      // context.stroke();
-    } else if (stopStyle == 'overflow') {
-      this.drawStripes(context, stopColor, x, y, w, h);
+    } else if (viewStyle.style == 'underline') {
+      context.lineWidth = 4;
+      context.strokeStyle = viewStyle.color;
+      let strokePosition = y + Math.floor(h/2);
+      context.moveTo(x, strokePosition);
+      context.lineTo(x + w, strokePosition);
+      context.stroke();
+    } else if (viewStyle.style == 'overflow') {
+      this.drawStripes(context, viewStyle.color, x, y, w, h);
     }
   }
 

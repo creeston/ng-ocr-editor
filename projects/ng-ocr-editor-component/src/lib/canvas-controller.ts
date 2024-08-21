@@ -1,6 +1,6 @@
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrLine } from './marked-menu';
-import { MenuProvider, ModeProvider, PageProvider } from './providers';
+import { OcrBox } from './marked-menu';
+import { MenuProvider, ModeProvider } from './providers';
 
 export class CanvasController {
   private mousePressed: boolean = false;
@@ -16,12 +16,7 @@ export class CanvasController {
 
   private canvasRef: any;
 
-  constructor(
-    private mode: ModeProvider,
-    private page: PageProvider,
-    private canvasDrawer: CanvasDrawer,
-    private menu: MenuProvider
-  ) { }
+  constructor(private mode: ModeProvider, private canvasDrawer: CanvasDrawer, private menu: MenuProvider) {}
 
   setCanvas(canvasRef: any) {
     this.canvasRef = canvasRef;
@@ -51,7 +46,7 @@ export class CanvasController {
         y2 = temp;
       }
 
-      this.menu.value!.pages[this.page.current].markup.forEach((l: OcrLine) => {
+      this.menu.value!.markup.forEach((l: OcrBox) => {
         if (
           l.x1 >= x1 &&
           l.x1 <= x2 &&
@@ -79,12 +74,8 @@ export class CanvasController {
   public pressEventHandler(e: MouseEvent | TouchEvent) {
     let canvas = this.canvasRef.nativeElement;
 
-    let x = (e as TouchEvent).changedTouches
-      ? (e as TouchEvent).changedTouches[0].pageX
-      : (e as MouseEvent).pageX;
-    let y = (e as TouchEvent).changedTouches
-      ? (e as TouchEvent).changedTouches[0].pageY
-      : (e as MouseEvent).pageY;
+    let x = (e as TouchEvent).changedTouches ? (e as TouchEvent).changedTouches[0].pageX : (e as MouseEvent).pageX;
+    let y = (e as TouchEvent).changedTouches ? (e as TouchEvent).changedTouches[0].pageY : (e as MouseEvent).pageY;
 
     let rect = canvas.getBoundingClientRect();
     x -= rect.left;
@@ -100,20 +91,10 @@ export class CanvasController {
     this.xPressed = x;
     this.mousePressed = true;
 
-    if (
-      this.mode.value == 'edit' &&
-      !this.x1Resize &&
-      !this.y1Resize &&
-      !this.x2Resize &&
-      !this.y2Resize
-    ) {
-      for (
-        let i = 0;
-        i < this.menu.value!.pages[this.page.current].markup.length;
-        i++
-      ) {
-        let line = this.menu.value!.pages[this.page.current].markup[i];
-        if (line.hover) {
+    if (this.mode.value == 'edit' && !this.x1Resize && !this.y1Resize && !this.x2Resize && !this.y2Resize) {
+      for (let i = 0; i < this.menu.value!.markup.length; i++) {
+        let line = this.menu.value!.markup[i];
+        if (line.hovered) {
           line.editSelected = true;
           // SCROLLING FUNCTIONALITY
           // let el = document.getElementById('line_' + i);
@@ -143,9 +124,7 @@ export class CanvasController {
     x = x * ratio;
     y = y * ratio;
 
-    let selection = this.menu.value!.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value!.markup.filter((l: OcrBox) => l.editSelected);
 
     if (this.mousePressed) {
       if (this.x1Resize) {
@@ -202,60 +181,32 @@ export class CanvasController {
     this.y2Resize = false;
 
     if (this.mode.value == 'edit') {
-      for (
-        let i = 0;
-        i < this.menu.value!.pages[this.page.current].markup.length;
-        i++
-      ) {
-        let line = this.menu.value!.pages[this.page.current].markup[i];
+      for (let i = 0; i < this.menu.value!.markup.length; i++) {
+        let line = this.menu.value!.markup[i];
         if (x > line.x1 && x < line.x2 && y > line.y1 && y < line.y2) {
-          line.hover = true;
+          line.hovered = true;
           if (line.editSelected) {
             this.xyMove = true;
           }
         } else {
-          line.hover = false;
+          line.hovered = false;
         }
 
         // Horizontal border hover
-        if (
-          line.editSelected &&
-          x > line.x1 - 5 &&
-          x <= line.x1 &&
-          y > line.y1 &&
-          y < line.y2
-        ) {
+        if (line.editSelected && x > line.x1 - 5 && x <= line.x1 && y > line.y1 && y < line.y2) {
           this.x1Resize = true;
         }
 
-        if (
-          line.editSelected &&
-          x < line.x2 + 5 &&
-          x > line.x2 &&
-          y > line.y1 &&
-          y < line.y2
-        ) {
+        if (line.editSelected && x < line.x2 + 5 && x > line.x2 && y > line.y1 && y < line.y2) {
           this.x2Resize = true;
         }
 
         // Verticle border hover
-        if (
-          line.editSelected &&
-          y > line.y1 - 5 &&
-          y <= line.y1 &&
-          x > line.x1 &&
-          x < line.x2
-        ) {
+        if (line.editSelected && y > line.y1 - 5 && y <= line.y1 && x > line.x1 && x < line.x2) {
           this.y1Resize = true;
         }
 
-        if (
-          line.editSelected &&
-          y < line.y2 + 5 &&
-          y > line.y2 &&
-          x > line.x1 &&
-          x < line.x2
-        ) {
+        if (line.editSelected && y < line.y2 + 5 && y > line.y2 && x > line.x1 && x < line.x2) {
           this.y2Resize = true;
         }
       }

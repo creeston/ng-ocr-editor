@@ -1,23 +1,16 @@
 import { CanvasController } from './canvas-controller';
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrLine } from './marked-menu';
-import { MenuProvider, PageProvider } from './providers';
+import { OcrBox } from './marked-menu';
+import { MenuProvider } from './providers';
 
 export class SelectionController {
-  constructor(
-    private canvas: CanvasDrawer,
-    private page: PageProvider,
-    private controller: CanvasController,
-    private menu: MenuProvider
-  ) { }
+  constructor(private canvas: CanvasDrawer, private controller: CanvasController, private menu: MenuProvider) {}
 
   moveLeft() {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -33,9 +26,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -51,9 +42,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -67,9 +56,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -83,9 +70,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -101,9 +86,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -119,9 +102,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -135,9 +116,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }

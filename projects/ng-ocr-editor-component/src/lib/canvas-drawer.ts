@@ -1,10 +1,6 @@
 import { DrawService } from './draw.service';
-import {
-  MenuProvider,
-  ModeProvider,
-  PageProvider,
-  PagesProvider,
-} from './providers';
+import { BoundingBoxStyle } from './marked-menu';
+import { MenuProvider, ModeProvider } from './providers';
 
 const SCALE_INCREMENT = 0.5;
 
@@ -22,10 +18,9 @@ export class CanvasDrawer {
   constructor(
     private draw: DrawService,
     private mode: ModeProvider,
-    private page: PageProvider,
     private menu: MenuProvider,
-    private pages: PagesProvider
-  ) { }
+    private boundingBoxStyle: BoundingBoxStyle
+  ) {}
 
   incrementScale() {
     this.scaleValue += SCALE_INCREMENT;
@@ -39,8 +34,7 @@ export class CanvasDrawer {
     let canvas = this.canvasRef.nativeElement;
     let imageCanvas = this.imageCanvasRef.nativeElement;
 
-    let page = this.pages.value[this.page.current];
-    const image = page.imageElement;
+    const image = this.menu.value?.imageElement;
 
     if (!image) {
       return;
@@ -59,37 +53,61 @@ export class CanvasDrawer {
 
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
-    this.drawEditCanvas(context, selectionBox);
+    if (this.mode.isView()) {
+      this.drawViewCanvas(context);
+    } else {
+      this.drawEditCanvas(context, selectionBox);
+    }
+  }
+
+  drawViewCanvas(context: any) {
+    if (!this.menu.value) {
+      return;
+    }
+
+    context.lineWidth = 3;
+    for (let box of this.menu.value.markup) {
+      let x = box.x1;
+      let y = box.y1;
+      let w = box.x2 - x;
+      let h = box.y2 - y;
+      if (box.viewToggled && box.viewStyle) {
+        this.draw.drawBox(context, x, y, w, h, box.viewStyle);
+      }
+    }
   }
 
   drawEditCanvas(context: any, selectionBox: any) {
-    const page = this.menu.value!.pages[this.page.current];
-    for (let i = 0; i < page.markup.length; i++) {
-      let line = page.markup[i];
+    const menu = this.menu.value;
+    if (!menu) {
+      return;
+    }
+    for (let i = 0; i < menu.markup.length; i++) {
+      let line = menu.markup[i];
       let x = line.x1;
       let y = line.y1;
       let w = line.x2 - x;
       let h = line.y2 - y;
-      if (!line.hover && !line.editSelected) {
+      if (!line.hovered && !line.editSelected) {
         context.beginPath();
-        context.strokeStyle = '#627320';
-        context.lineWidth = 2;
+        context.strokeStyle = this.boundingBoxStyle.color;
+        context.lineWidth = this.boundingBoxStyle.width;
         context.rect(x - 1, y - 1, w + 2, h + 2);
         context.stroke();
-        context.lineWidth = 1;
+        context.lineWidth = this.boundingBoxStyle.constastWidth;
         context.beginPath();
-        context.strokeStyle = '#fff6f0';
+        context.strokeStyle = this.boundingBoxStyle.contrastColor;
         context.rect(x, y, w, h);
         context.stroke();
       } else {
         context.beginPath();
-        context.strokeStyle = '#4F4742';
-        context.lineWidth = 5;
+        context.strokeStyle = this.boundingBoxStyle.selectedColor
+        context.lineWidth = this.boundingBoxStyle.selectedWidth;
         context.rect(x - 2, y - 2, w + 4, h + 4);
         context.stroke();
-        context.lineWidth = 1;
+        context.lineWidth = this.boundingBoxStyle.constastWidth;
         context.beginPath();
-        context.strokeStyle = '#fff6f0';
+        context.strokeStyle = this.boundingBoxStyle.contrastColor;
         context.rect(x, y, w, h);
         context.stroke();
       }

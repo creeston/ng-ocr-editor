@@ -1,5 +1,4 @@
-import { OcrLine, OcrDocument, OcrPage } from './marked-menu';
-
+import { OcrBox, OcrDocument } from './marked-menu';
 
 export class ModeProvider {
   public value: string = 'edit';
@@ -24,36 +23,14 @@ export class MenuProvider {
   }
 }
 
-export class PagesProvider {
-  public value: OcrPage[] = [];
-
-  public setPages(pages: OcrPage[]) {
-    this.value = pages;
-  }
-}
-
-export class PageProvider {
-  public current: number = 0;
-
-  changePage(value: number) {
-    this.current = value;
-  }
-}
-
 export class SelectionProvider {
-  constructor(
-    private page: PageProvider,
-    private menu: MenuProvider,
-    private pages: PagesProvider
-  ) { }
+  constructor(private menu: MenuProvider) {}
 
   getLeftSelection(canvas: any) {
     if (!this.menu.value) {
       return 0;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return 0;
     }
@@ -67,14 +44,13 @@ export class SelectionProvider {
 
     let left = Math.max(...x);
     let rect = canvas.getBoundingClientRect();
-    let page = this.pages.value[this.page.current];
 
-    if (!page.imageElement) {
+    if (!this.menu.value.imageElement) {
       return;
     }
 
     let canvasRealHeight = rect.height;
-    let canvasHeight = page.imageElement.height;
+    let canvasHeight = this.menu.value.imageElement.height;
     let ratio = canvasHeight / canvasRealHeight;
     let leftOffset = canvas.offsetLeft;
     return left / ratio + leftOffset + 3;
@@ -84,15 +60,13 @@ export class SelectionProvider {
     if (!this.menu.value) {
       return 0;
     }
-    let selection = this.menu.value.pages[this.page.current].markup.filter(
-      (l: OcrLine) => l.editSelected
-    );
+    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
     if (selection.length == 0) {
       return 0;
     }
     let y: any[] = [];
     let texts = [];
-    selection.forEach((l: OcrLine) => {
+    selection.forEach((l: OcrBox) => {
       y.push(l.y1);
       y.push(l.y2);
       texts.push(l.text);
@@ -100,14 +74,13 @@ export class SelectionProvider {
 
     let top = Math.min(...y);
     let rect = canvas.getBoundingClientRect();
-    let page = this.pages.value[this.page.current];
-    if (!page.imageElement) {
+    let imageElement = this.menu.value.imageElement;
+    if (!imageElement) {
       return;
     }
 
-
     let canvasRealHeight = rect.height;
-    let canvasHeight = page.imageElement.height;
+    let canvasHeight = imageElement.height;
     let ratio = canvasHeight / canvasRealHeight;
     let topOffset = canvas.offsetTop;
     return top / ratio + topOffset - 15;
@@ -117,10 +90,13 @@ export class SelectionProvider {
     if (!this.menu.value) {
       return false;
     }
-    return (
-      this.menu.value.pages[this.page.current].markup.findIndex(
-        (l: OcrLine) => l.editSelected
-      ) >= 0
-    );
+    return this.menu.value.markup.findIndex((l: OcrBox) => l.editSelected) >= 0;
+  }
+
+  getSelectionLength() {
+    if (!this.menu.value) {
+      return 0;
+    }
+    return this.menu.value.markup.filter((l: OcrBox) => l.editSelected).length;
   }
 }
