@@ -22,11 +22,11 @@ export interface OcrBox {
   y1: number;
   y2: number;
   viewStyle?: ViewStyle;
+  highlight: boolean;
 }
 
 export interface InteractiveOcrBox extends OcrBox {
   editSelected: boolean;
-  viewToggled: boolean;
   hovered: boolean;
   children: InteractiveOcrBox[];
 }

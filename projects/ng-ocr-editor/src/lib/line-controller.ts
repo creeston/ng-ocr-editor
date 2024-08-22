@@ -48,7 +48,7 @@ export class LineController {
       y1: y1,
       y2: y2,
       editSelected: true,
-      viewToggled: true,
+      highlight: true,
       hovered: false,
       children: selection,
     } as InteractiveOcrBox;
@@ -233,6 +233,10 @@ export class LineController {
         }
       });
     }
+  }
+
+  cleanHistoricalActions() {
+    this.historicalActions = [];
   }
 
   rollback() {
