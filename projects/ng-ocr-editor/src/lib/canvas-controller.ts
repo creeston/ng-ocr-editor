@@ -1,6 +1,6 @@
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrBox } from './marked-menu';
-import { MenuProvider, ModeProvider } from './providers';
+import { OcrBox } from './ocr-document';
+import { DocumentProvider, ModeProvider } from './providers';
 
 export class CanvasController {
   private mousePressed: boolean = false;
@@ -16,7 +16,7 @@ export class CanvasController {
 
   private canvasRef: any;
 
-  constructor(private mode: ModeProvider, private canvasDrawer: CanvasDrawer, private menu: MenuProvider) {}
+  constructor(private mode: ModeProvider, private canvasDrawer: CanvasDrawer, private menu: DocumentProvider) {}
 
   setCanvas(canvasRef: any) {
     this.canvasRef = canvasRef;

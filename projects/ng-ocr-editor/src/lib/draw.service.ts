@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ViewStyle } from './marked-menu';
+import { ViewStyle } from './ocr-document';
 
 @Injectable()
 export class DrawService {
-  drawBox(
-    context: any,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    viewStyle: ViewStyle,
-  ) {
+  drawBox(context: any, x: number, y: number, w: number, h: number, viewStyle: ViewStyle) {
     context.beginPath();
     if (viewStyle.style == 'fill') {
       let opacityColor = this.addAlpha(viewStyle.color, 0.8);
@@ -23,7 +16,7 @@ export class DrawService {
     } else if (viewStyle.style == 'underline') {
       context.lineWidth = 4;
       context.strokeStyle = viewStyle.color;
-      let strokePosition = y + Math.floor(h/2);
+      let strokePosition = y + Math.floor(h / 2);
       context.moveTo(x, strokePosition);
       context.lineTo(x + w, strokePosition);
       context.stroke();
@@ -32,14 +25,7 @@ export class DrawService {
     }
   }
 
-  drawStripes(
-    ctx: any,
-    color: string,
-    x: number,
-    y: number,
-    w: number,
-    h: number
-  ) {
+  drawStripes(ctx: any, color: string, x: number, y: number, w: number, h: number) {
     let opacityColor = this.addAlpha(color, 0.5);
     let numberOfStripes = 10;
     let step = h / numberOfStripes;
@@ -69,10 +55,7 @@ export class DrawService {
       ctx.lineCap = 'round';
 
       ctx.moveTo(x + i * step, y + h);
-      ctx.lineTo(
-        Math.min(x + i * step + h, x + (nSteps - 1) * step),
-        Math.max(y, y + h - (nSteps - 1 - i) * step)
-      );
+      ctx.lineTo(Math.min(x + i * step + h, x + (nSteps - 1) * step), Math.max(y, y + h - (nSteps - 1 - i) * step));
       ctx.stroke();
     }
 

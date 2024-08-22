@@ -1,6 +1,6 @@
 import { DrawService } from './draw.service';
-import { BoundingBoxStyle } from './marked-menu';
-import { MenuProvider, ModeProvider } from './providers';
+import { BoundingBoxStyle } from './ocr-document';
+import { DocumentProvider, ModeProvider } from './providers';
 
 const SCALE_INCREMENT = 0.5;
 
@@ -18,7 +18,7 @@ export class CanvasDrawer {
   constructor(
     private draw: DrawService,
     private mode: ModeProvider,
-    private menu: MenuProvider,
+    private menu: DocumentProvider,
     private boundingBoxStyle: BoundingBoxStyle
   ) {}
 
@@ -101,7 +101,7 @@ export class CanvasDrawer {
         context.stroke();
       } else {
         context.beginPath();
-        context.strokeStyle = this.boundingBoxStyle.selectedColor
+        context.strokeStyle = this.boundingBoxStyle.selectedColor;
         context.lineWidth = this.boundingBoxStyle.selectedWidth;
         context.rect(x - 2, y - 2, w + 4, h + 4);
         context.stroke();

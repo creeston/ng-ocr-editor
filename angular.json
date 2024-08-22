@@ -50,7 +50,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/demo-app",
+            "outputPath": "docs",
             "index": "projects/demo-app/src/index.html",
             "browser": "projects/demo-app/src/main.ts",
             "polyfills": [

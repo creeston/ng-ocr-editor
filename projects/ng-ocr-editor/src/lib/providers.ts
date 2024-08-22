@@ -1,4 +1,4 @@
-import { OcrBox, OcrDocument } from './marked-menu';
+import { OcrBox, OcrDocument } from './ocr-document';
 
 export class ModeProvider {
   public value: string = 'edit';
@@ -15,16 +15,16 @@ export class ModeProvider {
   isEdit = () => this.value == 'edit';
 }
 
-export class MenuProvider {
+export class DocumentProvider {
   public value: OcrDocument | null = null;
 
-  public setMenu(menu: OcrDocument) {
-    this.value = menu;
+  public set(document: OcrDocument) {
+    this.value = document;
   }
 }
 
 export class SelectionProvider {
-  constructor(private menu: MenuProvider) {}
+  constructor(private menu: DocumentProvider) {}
 
   getLeftSelection(canvas: any) {
     if (!this.menu.value) {

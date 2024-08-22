@@ -1,116 +1,88 @@
-<div *ngIf="demoMenu">
-  <div class="menu-control">
-    <button mat-icon-button (click)="editor.toViewMode()" *ngIf="editor.isEdit()" matTooltip="View">
-      <mat-icon>visibility</mat-icon>
-    </button>
-    <button mat-icon-button (click)="editor.toEditMode()" *ngIf="editor.isView()" matTooltip="Edit">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-icon-button (click)="editor.zoomIn()" matTooltip="Zoom in">
-      <mat-icon>zoom_in</mat-icon>
-    </button>
-    <button mat-icon-button (click)="editor.zoomOut()" matTooltip="Zoom out">
-      <mat-icon>zoom_out</mat-icon>
-    </button>
-    <div *ngIf="editor.isEdit()">
-      <button mat-icon-button (click)="editor.selectAll()" matTooltip="Select all">
-        <mat-icon>done_all</mat-icon>
+<div *ngIf="demoMenu" class="demo-container">
+  <div class="editor">
+    <div class="menu-control">
+      <button mat-icon-button (click)="editor.toViewMode()" *ngIf="editor.isEdit()" matTooltip="View">
+        <mat-icon>visibility</mat-icon>
       </button>
-      <button mat-icon-button (click)="editor.deselectAll()" matTooltip="Deselect all">
-        <mat-icon>remove_done</mat-icon>
+      <button mat-icon-button (click)="editor.toEditMode()" *ngIf="editor.isView()" matTooltip="Edit">
+        <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button (click)="editor.deleteSelected()" matTooltip="Delete selected">
-        <mat-icon>clear</mat-icon>
+      <button mat-icon-button (click)="editor.zoomIn()" matTooltip="Zoom in">
+        <mat-icon>zoom_in</mat-icon>
       </button>
-      <button mat-icon-button (click)="editor.mergeSelection()" matTooltip="Merge selected">
-        <mat-icon>compress</mat-icon>
+      <button mat-icon-button (click)="editor.zoomOut()" matTooltip="Zoom out">
+        <mat-icon>zoom_out</mat-icon>
       </button>
-      <button
-        mat-icon-button
-        (click)="editor.rollback()"
-        matTooltip="Rollback last action"
-        [disabled]="!editor.anyActionsToRollback()"
-      >
-        <mat-icon>history</mat-icon>
-      </button>
-      <button mat-icon-button (click)="editor.resetMarkup()" matTooltip="Reset">
-        <mat-icon>settings_backup_restore</mat-icon>
-      </button>
-      <button mat-icon-button (click)="editor.addLine(-1)" matTooltip="Add box">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-
-    <div *ngIf="editor.isAnySelected()" class="arrow-control-container">
-      <button mat-button (click)="editor.moveSelectionLeft()" class="arrow-control">
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionUp()" class="arrow-control arrow-top">
-        <mat-icon>expand_less</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionRight()" class="arrow-control arrow-right">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionDown()" class="arrow-control arrow-down">
-        <mat-icon>expand_more</mat-icon>
-      </button>
-    </div>
-    <div *ngIf="editor.isAnySelected()" class="arrow-control-container-2">
-      <button mat-button (click)="editor.moveSelectionLeft2()" class="arrow-control">
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionUp2()" class="arrow-control arrow-top">
-        <mat-icon>expand_less</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionRight2()" class="arrow-control arrow-right">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionDown2()" class="arrow-control arrow-down">
-        <mat-icon>expand_more</mat-icon>
-      </button>
-    </div>
-  </div>
-  <div class="container">
-    <ng-ocr-editor-component
-      [(menu)]="demoMenu"
-      mode="view"
-      [boundingBoxStyle]="boundingBoxStyle"
-      #editor
-    ></ng-ocr-editor-component>
-
-    <!-- Edit markup -->
-    <div class="markup-setting" *ngIf="editor.isEdit()" [style.height.vh]="editor.canvasHeight">
-      <div></div>
-      <div
-        *ngFor="let line of demoMenu.markup!; let i = index"
-        (mouseover)="line.hovered = true; editor.redrawCanvas()"
-        (mouseleave)="line.hovered = false; editor.redrawCanvas()"
-        [id]="'line_' + i"
-        class="dish-line-container"
-      >
-        <mat-checkbox (change)="editor.onLineSelected($event)" [(ngModel)]="line.editSelected"></mat-checkbox>
-        <mat-form-field class="lineName">
-          <input matInput [(ngModel)]="line.text" />
-        </mat-form-field>
+      <div *ngIf="editor.isEdit()">
+        <button mat-icon-button (click)="editor.selectAll()" matTooltip="Select all">
+          <mat-icon>done_all</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editor.deselectAll()" matTooltip="Deselect all">
+          <mat-icon>remove_done</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editor.deleteSelected()" matTooltip="Delete selected">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editor.mergeSelection()" matTooltip="Merge selected">
+          <mat-icon>compress</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="editor.rollback()"
+          matTooltip="Rollback last action"
+          [disabled]="!editor.anyActionsToRollback()"
+        >
+          <mat-icon>history</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editor.resetMarkup()" matTooltip="Reset">
+          <mat-icon>settings_backup_restore</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editor.addLine(-1)" matTooltip="Add box">
+          <mat-icon>add</mat-icon>
+        </button>
       </div>
     </div>
+    <div class="editor-with-list">
+      <ng-ocr-editor-component
+        [(document)]="demoMenu"
+        mode="edit"
+        [boundingBoxStyle]="boundingBoxStyle"
+        #editor
+      ></ng-ocr-editor-component>
+      <div class="ocr-list">
+        <!-- Edit boxes -->
+        <div class="markup-setting" *ngIf="editor.isEdit()" [style.height.vh]="editor.canvasHeight">
+          <div
+            *ngFor="let box of demoMenu.markup!; let i = index"
+            (mouseover)="box.hovered = true; editor.redrawCanvas()"
+            (mouseleave)="box.hovered = false; editor.redrawCanvas()"
+            [id]="'line_' + i"
+          >
+            <mat-checkbox (change)="editor.onLineSelected($event)" [(ngModel)]="box.editSelected"></mat-checkbox>
+            <mat-form-field class="box-text">
+              <input matInput [(ngModel)]="box.text" />
+            </mat-form-field>
+          </div>
+        </div>
 
-    <!-- View markup -->
-    <div class="markup-setting" *ngIf="editor.isView()" [style.height.vh]="editor.canvasHeight">
-      <table mat-table [dataSource]="demoMenu.markup!">
-        <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef>№</th>
-          <td mat-cell *matCellDef="let line; let i = index">{{ i + 1 }}.</td>
-        </ng-container>
+        <!-- View boxes -->
+        <div class="markup-setting" *ngIf="editor.isView()" [style.height.vh]="editor.canvasHeight">
+          <table mat-table [dataSource]="demoMenu.markup!">
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef>№</th>
+              <td mat-cell *matCellDef="let line; let i = index">{{ i + 1 }}.</td>
+            </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Dish</th>
-          <td mat-cell *matCellDef="let line">{{ line.text }}</td>
-        </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Dish</th>
+              <td mat-cell *matCellDef="let line">{{ line.text }}</td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
