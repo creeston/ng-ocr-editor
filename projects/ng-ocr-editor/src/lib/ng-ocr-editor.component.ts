@@ -4,7 +4,7 @@ import { CanvasDrawer } from './canvas-drawer';
 import { CanvasController } from './canvas-controller';
 import { SelectionController } from './selection-controller';
 import { LineController } from './line-controller';
-import { BoundingBoxStyle, OcrBox, OcrDocument } from './ocr-document';
+import { BoundingBoxStyle, InteractiveOcrBox, InteractiveOcrDocument, OcrBox, OcrDocument } from './ocr-document';
 import { DrawService } from './draw.service';
 import { CommonModule } from '@angular/common';
 
@@ -65,7 +65,9 @@ export class NgOcrEditorComponent {
 
     this.canvasController?.setCanvas(this.canvasRef);
     this.canvasDrawer?.setElements(this.canvasRef, this.imageCanvasRef);
-    this.documentProvider.set(this.document);
+
+    const interactiveDocument = this.convertToIntercativeDocument(this.document);
+    this.documentProvider.set(interactiveDocument);
     this.originalDocument = JSON.parse(JSON.stringify(this.document));
     if (this.mode == 'view') {
       this.modeProvider.switchToView();
@@ -75,7 +77,7 @@ export class NgOcrEditorComponent {
     this.redrawCanvas();
   }
 
-  flatChildrenLines(line: OcrBox) {
+  flatChildrenLines(line: InteractiveOcrBox) {
     if (!line.children || line.children.length == 0) {
       return [line];
     } else {
@@ -88,7 +90,7 @@ export class NgOcrEditorComponent {
     }
   }
 
-  removeLine(line: OcrBox) {
+  removeLine(line: InteractiveOcrBox) {
     this.lineController.removeLine(line);
     this.redrawCanvas();
   }
@@ -122,7 +124,7 @@ export class NgOcrEditorComponent {
     this.redrawCanvas();
   }
 
-  onCoordChange(event: any, line: OcrBox, lineIndex: number, prop: any) {
+  onCoordChange(event: any, line: InteractiveOcrBox, lineIndex: number, prop: any) {
     this.lineController.onCoordChange(event, line, lineIndex, prop);
     this.redrawCanvas();
   }
@@ -139,9 +141,26 @@ export class NgOcrEditorComponent {
     const image = this.document.imageElement;
     this.document = JSON.parse(JSON.stringify(this.originalDocument));
     this.document.imageElement = image;
-    this.documentProvider.set(this.document);
+    const interactiveDocument = this.convertToIntercativeDocument(this.document);
+    this.documentProvider.set(interactiveDocument);
     this.documentChange.emit(this.document);
     this.redrawCanvas();
+  }
+
+  convertToIntercativeDocument(document: OcrDocument): InteractiveOcrDocument {
+    const interactiveOcrBoxes = document.markup.map((l: OcrBox) => {
+      return {
+        ...l,
+        editSelected: false,
+        hovered: false,
+        viewToggled: false,
+        children: [],
+      } as InteractiveOcrBox;
+    });
+    return {
+      markup: interactiveOcrBoxes,
+      imageElement: document.imageElement,
+    };
   }
 
   rollback() {

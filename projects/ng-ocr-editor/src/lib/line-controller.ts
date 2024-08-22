@@ -1,4 +1,4 @@
-import { OcrBox } from './ocr-document';
+import { InteractiveOcrBox, OcrBox } from './ocr-document';
 import { DocumentProvider } from './providers';
 
 export class LineController {
@@ -12,7 +12,7 @@ export class LineController {
       return;
     }
     let markup = this.menu.value.markup;
-    let selection = markup.filter((l: OcrBox) => l.editSelected);
+    let selection = markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -51,7 +51,7 @@ export class LineController {
       viewToggled: true,
       hovered: false,
       children: selection,
-    } as OcrBox;
+    } as InteractiveOcrBox;
 
     let insertIndex = this.menu.value.markup.indexOf(selection[0]);
     this.menu.value.markup = this.menu.value.markup.filter((item: any) => !item.editSelected);
@@ -60,7 +60,7 @@ export class LineController {
     this.historicalActions.push(() => this.reverseMergeSelection(line, selectionIndexes));
   }
 
-  reverseMergeSelection(line: OcrBox, selectionIndexes: number[]) {
+  reverseMergeSelection(line: InteractiveOcrBox, selectionIndexes: number[]) {
     if (!this.menu.value) {
       return;
     }
@@ -80,7 +80,7 @@ export class LineController {
     this.menu.value.markup = currentMarkup;
   }
 
-  initializeLine(line: OcrBox) {
+  initializeLine(line: InteractiveOcrBox) {
     line.editSelected = false;
     line.hovered = false;
     line.text = line.text?.toLowerCase() ?? '';
@@ -156,7 +156,7 @@ export class LineController {
     this.menu.value.markup = markup.filter((item: any) => item !== line);
   }
 
-  removeLine(line: OcrBox) {
+  removeLine(line: InteractiveOcrBox) {
     if (!this.menu.value) {
       return;
     }
@@ -167,7 +167,7 @@ export class LineController {
     this.historicalActions.push(() => this.reverseRemoveLine(line, index));
   }
 
-  reverseRemoveLine(line: OcrBox, index: number) {
+  reverseRemoveLine(line: InteractiveOcrBox, index: number) {
     if (!this.menu.value) {
       return;
     }

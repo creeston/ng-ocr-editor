@@ -1,4 +1,4 @@
-import { OcrBox, OcrDocument } from './ocr-document';
+import { InteractiveOcrBox, InteractiveOcrDocument, OcrBox, OcrDocument } from './ocr-document';
 
 export class ModeProvider {
   public value: string = 'edit';
@@ -16,9 +16,9 @@ export class ModeProvider {
 }
 
 export class DocumentProvider {
-  public value: OcrDocument | null = null;
+  public value: InteractiveOcrDocument | null = null;
 
-  public set(document: OcrDocument) {
+  public set(document: InteractiveOcrDocument) {
     this.value = document;
   }
 }
@@ -30,7 +30,7 @@ export class SelectionProvider {
     if (!this.menu.value) {
       return 0;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return 0;
     }
@@ -60,7 +60,7 @@ export class SelectionProvider {
     if (!this.menu.value) {
       return 0;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return 0;
     }
@@ -90,13 +90,13 @@ export class SelectionProvider {
     if (!this.menu.value) {
       return false;
     }
-    return this.menu.value.markup.findIndex((l: OcrBox) => l.editSelected) >= 0;
+    return this.menu.value.markup.findIndex((l: InteractiveOcrBox) => l.editSelected) >= 0;
   }
 
   getSelectionLength() {
     if (!this.menu.value) {
       return 0;
     }
-    return this.menu.value.markup.filter((l: OcrBox) => l.editSelected).length;
+    return this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected).length;
   }
 }

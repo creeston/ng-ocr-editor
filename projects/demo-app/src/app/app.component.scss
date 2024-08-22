@@ -5,6 +5,13 @@
   margin-bottom: 10px;
 }
 
+/* Style for the toolbar title */
+.toolbar-title {
+  font-size: 24px;
+  text-align: center;
+  width: 100%;
+}
+
 .demo-container {
   display: flex;
   align-items: center;
@@ -12,8 +19,11 @@
   width: 100%;
 }
 
-.editor-container {
-  display: flex;
+.mat-toolbar {
+  color: white;
+  margin-bottom: 20px;
+  background-color: #525bfe;
+
 }
 
 .editor-with-list {
