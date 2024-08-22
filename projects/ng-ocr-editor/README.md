@@ -1,20 +1,51 @@
-# NgOcrEditorComponent
+<h1 align="center">Angular OCR Editor</h1>
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+<p align="center">Angular component that enabling viewing and editing of OCR image data in UI.</p>
 
-## Code scaffolding
 
-Run `ng generate component component-name --project ng-ocr-editor` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-ocr-editor`.
-> Note: Don't forget to add `--project ng-ocr-editor` or else it will be added to the default project in your `angular.json` file. 
+[![npm](https://img.shields.io/badge/demo-online-ed1c46.svg)](https://creeston.github.io/ng-ocr-editor)
+[![npm](https://img.shields.io/npm/v/ng-ocr-editor)](https://www.npmjs.com/package/ng-ocr-editor)
+[![npm](https://img.shields.io/npm/l/express.svg?maxAge=2592000)](/LICENSE)
 
-## Build
+___
 
-Run `ng build ng-ocr-editor` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Usage
 
-## Publishing
+**app.component.html**
+```
+<ng-ocr-editor-component
+    [(document)]="demoDocument" [boudingBoxStyle]="boundingBoxStyle"
+></ng-ocr-editor-component>
 
-After building your library with `ng build ng-ocr-editor`, go to the dist folder `cd dist/ng-ocr-editor` and run `npm publish`.
+<img src="assets/demoImage.jpg" #demoImage hidden (load)="onImageLoad()"/>
+```
+**app.component.ts**
+```
+  boundingBoxStyle: BoundingBoxStyle = {
+    color: '#627320',
+    width: 2,
+    selectedColor: '#4F4742',
+    selectedWidth: 5,
+    contrastColor: '#fff6f0',
+    constastWidth: 1,
+  };
 
-## Further help
+  @ViewChild('demoImage') imageElement: ElementRef;
+  demoMenu: demoDocument | null = null;
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+  onImageLoad() {
+    this.demoDocument = {
+      imageElement: this.imageElement.nativeElement,
+      markup: [
+        {
+          text: 'Text',
+          x1: 75, x2: 410, y1: 250, y2: 300,
+        },
+      ],
+    };
+  }
+```
+
+## Issues
+
+If you identify any errors in this module, or have an idea for an improvement, please open an [issue](https://github.com/creeston/ng-ocr-editor/issues).
