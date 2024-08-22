@@ -5,7 +5,18 @@
   margin-bottom: 10px;
 }
 
-.container {
+.demo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.editor-container {
+  display: flex;
+}
+
+.editor-with-list {
   display: flex;
 }
 
