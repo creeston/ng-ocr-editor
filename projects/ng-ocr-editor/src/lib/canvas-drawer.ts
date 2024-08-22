@@ -71,7 +71,7 @@ export class CanvasDrawer {
       let y = box.y1;
       let w = box.x2 - x;
       let h = box.y2 - y;
-      if (box.viewToggled && box.viewStyle) {
+      if (box.highlight && box.viewStyle) {
         this.draw.drawBox(context, x, y, w, h, box.viewStyle);
       }
     }

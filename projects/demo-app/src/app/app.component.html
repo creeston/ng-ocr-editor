@@ -53,7 +53,7 @@
         [boundingBoxStyle]="boundingBoxStyle"
         #editor
       ></ng-ocr-editor-component>
-      <div class="ocr-list">
+      <div class="ocr-list" *ngIf="editor.documentProvider.value">
         <!-- Edit boxes -->
         <div class="markup-setting" *ngIf="editor.isEdit()" [style.height.vh]="editor.canvasHeight">
           <div

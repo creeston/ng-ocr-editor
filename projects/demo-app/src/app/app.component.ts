@@ -62,6 +62,7 @@ export class AppComponent {
             style: 'underline',
             color: 'red',
           },
+          highlight: true,
         },
         {
           text: 'Chocolate lava cake',
@@ -73,6 +74,7 @@ export class AppComponent {
             style: 'fill',
             color: '#000000',
           },
+          highlight: true,
         },
         {
           text: 'Soft drinks',
@@ -84,6 +86,7 @@ export class AppComponent {
             style: 'overflow',
             color: '#000000',
           },
+          highlight: true,
         },
       ],
     };

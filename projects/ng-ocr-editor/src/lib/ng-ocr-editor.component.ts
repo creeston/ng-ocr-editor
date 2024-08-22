@@ -48,7 +48,7 @@ export class NgOcrEditorComponent {
 
   constructor(private draw: DrawService) {}
 
-  ngAfterViewInit() {
+  ngOnInit() {
     if (this.boundingBoxStyle == null) {
       this.boundingBoxStyle = {
         color: '#627320',
@@ -59,16 +59,19 @@ export class NgOcrEditorComponent {
         constastWidth: 1,
       };
     }
-    this.canvasDrawer = new CanvasDrawer(this.draw, this.modeProvider, this.documentProvider, this.boundingBoxStyle);
-    this.canvasController = new CanvasController(this.modeProvider, this.canvasDrawer, this.documentProvider);
-    this.selectionController = new SelectionController(this.canvasDrawer, this.canvasController, this.documentProvider);
-
-    this.canvasController?.setCanvas(this.canvasRef);
-    this.canvasDrawer?.setElements(this.canvasRef, this.imageCanvasRef);
 
     const interactiveDocument = this.convertToIntercativeDocument(this.document);
     this.documentProvider.set(interactiveDocument);
     this.originalDocument = JSON.parse(JSON.stringify(this.document));
+  }
+
+  ngAfterViewInit() {
+    this.canvasDrawer = new CanvasDrawer(this.draw, this.modeProvider, this.documentProvider, this.boundingBoxStyle!);
+    this.canvasController = new CanvasController(this.modeProvider, this.canvasDrawer, this.documentProvider);
+    this.selectionController = new SelectionController(this.canvasDrawer, this.canvasController, this.documentProvider);
+    this.canvasController?.setCanvas(this.canvasRef);
+    this.canvasDrawer?.setElements(this.canvasRef, this.imageCanvasRef);
+   
     if (this.mode == 'view') {
       this.modeProvider.switchToView();
     } else {
@@ -143,6 +146,7 @@ export class NgOcrEditorComponent {
     this.document.imageElement = image;
     const interactiveDocument = this.convertToIntercativeDocument(this.document);
     this.documentProvider.set(interactiveDocument);
+    this.lineController.cleanHistoricalActions();
     this.documentChange.emit(this.document);
     this.redrawCanvas();
   }
