@@ -3,6 +3,11 @@ export interface OcrDocument {
   imageElement?: HTMLImageElement;
 }
 
+export interface InteractiveOcrDocument {
+  markup: InteractiveOcrBox[];
+  imageElement?: HTMLImageElement;
+}
+
 export interface Viewport {
   x1: number;
   y1: number;
@@ -16,11 +21,14 @@ export interface OcrBox {
   x2: number;
   y1: number;
   y2: number;
+  viewStyle?: ViewStyle;
+}
+
+export interface InteractiveOcrBox extends OcrBox {
   editSelected: boolean;
   viewToggled: boolean;
   hovered: boolean;
-  viewStyle?: ViewStyle;
-  children: OcrBox[];
+  children: InteractiveOcrBox[];
 }
 
 export interface BoundingBoxStyle {

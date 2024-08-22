@@ -1,6 +1,6 @@
 import { CanvasController } from './canvas-controller';
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrBox } from './ocr-document';
+import { InteractiveOcrBox, OcrBox } from './ocr-document';
 import { DocumentProvider } from './providers';
 
 export class SelectionController {
@@ -10,7 +10,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -26,7 +26,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -42,7 +42,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -56,7 +56,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -70,7 +70,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -86,7 +86,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -102,7 +102,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }
@@ -116,7 +116,7 @@ export class SelectionController {
     if (!this.menu.value) {
       return;
     }
-    let selection = this.menu.value.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value.markup.filter((l: InteractiveOcrBox) => l.editSelected);
     if (selection.length == 0) {
       return;
     }

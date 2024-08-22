@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatToolbarModule,
     CommonModule,
   ],
   templateUrl: './app.component.html',
@@ -56,10 +58,6 @@ export class AppComponent {
           x2: 410,
           y1: 250,
           y2: 300,
-          editSelected: false,
-          viewToggled: true,
-          hovered: false,
-          children: [],
           viewStyle: {
             style: 'underline',
             color: 'red',
@@ -71,10 +69,6 @@ export class AppComponent {
           x2: 560,
           y1: 480,
           y2: 540,
-          editSelected: false,
-          viewToggled: true,
-          hovered: false,
-          children: [],
           viewStyle: {
             style: 'fill',
             color: '#000000',
@@ -86,10 +80,6 @@ export class AppComponent {
           x2: 400,
           y1: 835,
           y2: 895,
-          editSelected: false,
-          viewToggled: true,
-          hovered: false,
-          children: [],
           viewStyle: {
             style: 'overflow',
             color: '#000000',

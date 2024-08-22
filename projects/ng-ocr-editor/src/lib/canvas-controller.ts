@@ -1,5 +1,5 @@
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrBox } from './ocr-document';
+import { InteractiveOcrBox, OcrBox } from './ocr-document';
 import { DocumentProvider, ModeProvider } from './providers';
 
 export class CanvasController {
@@ -46,7 +46,7 @@ export class CanvasController {
         y2 = temp;
       }
 
-      this.menu.value!.markup.forEach((l: OcrBox) => {
+      this.menu.value!.markup.forEach((l: InteractiveOcrBox) => {
         if (
           l.x1 >= x1 &&
           l.x1 <= x2 &&
@@ -124,7 +124,7 @@ export class CanvasController {
     x = x * ratio;
     y = y * ratio;
 
-    let selection = this.menu.value!.markup.filter((l: OcrBox) => l.editSelected);
+    let selection = this.menu.value!.markup.filter((l: InteractiveOcrBox) => l.editSelected);
 
     if (this.mousePressed) {
       if (this.x1Resize) {
