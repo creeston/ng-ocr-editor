@@ -40,57 +40,26 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
-
-    <div *ngIf="editor.isAnySelected()" class="arrow-control-container">
-      <button mat-button (click)="editor.moveSelectionLeft()" class="arrow-control">
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionUp()" class="arrow-control arrow-top">
-        <mat-icon>expand_less</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionRight()" class="arrow-control arrow-right">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionDown()" class="arrow-control arrow-down">
-        <mat-icon>expand_more</mat-icon>
-      </button>
-    </div>
-    <div *ngIf="editor.isAnySelected()" class="arrow-control-container-2">
-      <button mat-button (click)="editor.moveSelectionLeft2()" class="arrow-control">
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionUp2()" class="arrow-control arrow-top">
-        <mat-icon>expand_less</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionRight2()" class="arrow-control arrow-right">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-      <button mat-button (click)="editor.moveSelectionDown2()" class="arrow-control arrow-down">
-        <mat-icon>expand_more</mat-icon>
-      </button>
-    </div>
   </div>
   <div class="container">
     <ng-ocr-editor-component
-      [(menu)]="demoMenu"
-      mode="view"
+      [(document)]="demoMenu"
+      mode="edit"
       [boundingBoxStyle]="boundingBoxStyle"
       #editor
     ></ng-ocr-editor-component>
 
     <!-- Edit markup -->
     <div class="markup-setting" *ngIf="editor.isEdit()" [style.height.vh]="editor.canvasHeight">
-      <div></div>
       <div
-        *ngFor="let line of demoMenu.markup!; let i = index"
-        (mouseover)="line.hovered = true; editor.redrawCanvas()"
-        (mouseleave)="line.hovered = false; editor.redrawCanvas()"
+        *ngFor="let box of demoMenu.markup!; let i = index"
+        (mouseover)="box.hovered = true; editor.redrawCanvas()"
+        (mouseleave)="box.hovered = false; editor.redrawCanvas()"
         [id]="'line_' + i"
-        class="dish-line-container"
       >
-        <mat-checkbox (change)="editor.onLineSelected($event)" [(ngModel)]="line.editSelected"></mat-checkbox>
-        <mat-form-field class="lineName">
-          <input matInput [(ngModel)]="line.text" />
+        <mat-checkbox (change)="editor.onLineSelected($event)" [(ngModel)]="box.editSelected"></mat-checkbox>
+        <mat-form-field class="box-text">
+          <input matInput [(ngModel)]="box.text" />
         </mat-form-field>
       </div>
     </div>

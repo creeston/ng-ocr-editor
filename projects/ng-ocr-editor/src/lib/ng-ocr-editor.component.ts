@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MenuProvider, ModeProvider, SelectionProvider } from './providers';
+import { DocumentProvider, ModeProvider, SelectionProvider } from './providers';
 import { CanvasDrawer } from './canvas-drawer';
 import { CanvasController } from './canvas-controller';
 import { SelectionController } from './selection-controller';
 import { LineController } from './line-controller';
-import { BoundingBoxStyle, OcrBox, OcrDocument } from './marked-menu';
+import { BoundingBoxStyle, OcrBox, OcrDocument } from './ocr-document';
 import { DrawService } from './draw.service';
 import { CommonModule } from '@angular/common';
 
@@ -21,22 +21,22 @@ const ZOOM_INCREMENT = 25;
 export class NgOcrEditorComponent {
   canvasHeight: number = 80;
 
-  @Input({ required: true }) menu: OcrDocument;
-  @Output() menuChange = new EventEmitter<OcrDocument>();
+  @Input({ required: true }) document: OcrDocument;
+  @Output() documentChange = new EventEmitter<OcrDocument>();
 
   @Input() mode: 'edit' | 'view' = 'edit';
-  @Input({ required: true }) boundingBoxStyle: BoundingBoxStyle;
+  @Input() boundingBoxStyle: BoundingBoxStyle | null = null;
 
-  origialMenu: OcrDocument | null = null;
+  originalDocument: OcrDocument | null = null;
 
-  menuProvider: MenuProvider = new MenuProvider();
-  selection: SelectionProvider = new SelectionProvider(this.menuProvider);
+  documentProvider: DocumentProvider = new DocumentProvider();
+  selection: SelectionProvider = new SelectionProvider(this.documentProvider);
   modeProvider: ModeProvider = new ModeProvider();
 
   canvasDrawer: CanvasDrawer | null = null;
   canvasController: CanvasController | null = null;
   selectionController: SelectionController | null = null;
-  lineController: LineController = new LineController(this.menuProvider);
+  lineController: LineController = new LineController(this.documentProvider);
 
   markupedSavedMessage = '';
   closeText = '';
@@ -49,14 +49,24 @@ export class NgOcrEditorComponent {
   constructor(private draw: DrawService) {}
 
   ngAfterViewInit() {
-    this.canvasDrawer = new CanvasDrawer(this.draw, this.modeProvider, this.menuProvider, this.boundingBoxStyle);
-    this.canvasController = new CanvasController(this.modeProvider, this.canvasDrawer, this.menuProvider);
-    this.selectionController = new SelectionController(this.canvasDrawer, this.canvasController, this.menuProvider);
+    if (this.boundingBoxStyle == null) {
+      this.boundingBoxStyle = {
+        color: '#627320',
+        width: 2,
+        selectedColor: '#4F4742',
+        selectedWidth: 5,
+        contrastColor: '#fff6f0',
+        constastWidth: 1,
+      };
+    }
+    this.canvasDrawer = new CanvasDrawer(this.draw, this.modeProvider, this.documentProvider, this.boundingBoxStyle);
+    this.canvasController = new CanvasController(this.modeProvider, this.canvasDrawer, this.documentProvider);
+    this.selectionController = new SelectionController(this.canvasDrawer, this.canvasController, this.documentProvider);
 
     this.canvasController?.setCanvas(this.canvasRef);
     this.canvasDrawer?.setElements(this.canvasRef, this.imageCanvasRef);
-    this.menuProvider.setMenu(this.menu);
-    this.origialMenu = JSON.parse(JSON.stringify(this.menu));
+    this.documentProvider.set(this.document);
+    this.originalDocument = JSON.parse(JSON.stringify(this.document));
     if (this.mode == 'view') {
       this.modeProvider.switchToView();
     } else {
@@ -122,15 +132,15 @@ export class NgOcrEditorComponent {
   }
 
   resetMarkup() {
-    if (!this.origialMenu) {
+    if (!this.originalDocument) {
       return;
     }
 
-    const image = this.menu.imageElement;
-    this.menu = JSON.parse(JSON.stringify(this.origialMenu));
-    this.menu.imageElement = image;
-    this.menuProvider.setMenu(this.menu);
-    this.menuChange.emit(this.menu);
+    const image = this.document.imageElement;
+    this.document = JSON.parse(JSON.stringify(this.originalDocument));
+    this.document.imageElement = image;
+    this.documentProvider.set(this.document);
+    this.documentChange.emit(this.document);
     this.redrawCanvas();
   }
 

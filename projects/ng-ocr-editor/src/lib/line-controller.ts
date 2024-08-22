@@ -1,11 +1,11 @@
-import { OcrBox } from './marked-menu';
-import { MenuProvider } from './providers';
+import { OcrBox } from './ocr-document';
+import { DocumentProvider } from './providers';
 
 export class LineController {
   deletedLines: string[] = [];
   historicalActions: any[] = [];
 
-  constructor(private menu: MenuProvider) {}
+  constructor(private menu: DocumentProvider) {}
 
   mergeSelection() {
     if (!this.menu.value) {

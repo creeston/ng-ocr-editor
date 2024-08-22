@@ -1,10 +1,10 @@
 import { CanvasController } from './canvas-controller';
 import { CanvasDrawer } from './canvas-drawer';
-import { OcrBox } from './marked-menu';
-import { MenuProvider } from './providers';
+import { OcrBox } from './ocr-document';
+import { DocumentProvider } from './providers';
 
 export class SelectionController {
-  constructor(private canvas: CanvasDrawer, private controller: CanvasController, private menu: MenuProvider) {}
+  constructor(private canvas: CanvasDrawer, private controller: CanvasController, private menu: DocumentProvider) {}
 
   moveLeft() {
     if (!this.menu.value) {

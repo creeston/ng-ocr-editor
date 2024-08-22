@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgOcrEditorComponent } from '../../../ng-ocr-editor/src/public-api';
-import { BoundingBoxStyle, OcrDocument } from '../../../ng-ocr-editor/src/lib/marked-menu';
+import { BoundingBoxStyle, OcrDocument } from '../../../ng-ocr-editor/src/lib/ocr-document';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { MatTableModule } from '@angular/material/table';
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
+    MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
@@ -36,11 +38,11 @@ export class AppComponent {
   displayedColumns = ['position', 'name'];
 
   boundingBoxStyle: BoundingBoxStyle = {
-    color: '#627320',
+    color: '#44474e',
     width: 2,
-    selectedColor: '#4F4742',
-    selectedWidth: 5,
-    contrastColor: '#fff6f0',
+    selectedColor: '#343dff',
+    selectedWidth: 6,
+    contrastColor: '#e0e2ec',
     constastWidth: 1,
   };
 
