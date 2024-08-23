@@ -1,4 +1,4 @@
-import { InteractiveOcrBox, OcrBox } from './ocr-document';
+import { InteractiveOcrBox, OcrBox, ViewStyle } from './ocr-document';
 import { DocumentProvider } from './providers';
 
 export class LineController {
@@ -93,12 +93,14 @@ export class LineController {
     }
     let line: any = {};
     if (index < 0) {
+      let viewStyle: ViewStyle | undefined = undefined;
       if (this.menu.value.markup.length > 0) {
         let baseLine = this.menu.value.markup[0];
         var x1 = baseLine.x1;
         var x2 = baseLine.x2;
         var y1 = Math.max(10, baseLine.y1 - 20);
         var y2 = Math.max(30, baseLine.y2 - 20);
+        viewStyle= baseLine.viewStyle;
       } else {
         x1 = 10;
         x2 = 70;
@@ -111,17 +113,16 @@ export class LineController {
         x2: x2,
         y1: y1,
         y2: y2,
+        
         editSelected: true,
-        viewSelected: true,
-        hover: false,
-        box: [
-          [x1, y1],
-          [x1, y2],
-        ],
+        highlight: false,
+        viewStyle: viewStyle,
+        hovered: false,
         tag: 'DISH',
         children: [],
-      };
-      this.menu.value.markup.unshift(line);
+      } as InteractiveOcrBox;
+
+      this.menu.value.markup = [line, ...this.menu.value.markup];
     } else {
       let baseLine = this.menu.value.markup[index];
       let baseLineHeight = baseLine.y2 - baseLine.y1;
@@ -141,7 +142,9 @@ export class LineController {
         tag: 'DISH',
         children: [],
       };
-      this.menu.value.markup.splice(index + 1, 0, line);
+
+      // insert element at index
+      this.menu.value.markup = this.menu.value.markup.slice(0, index + 1).concat([line], this.menu.value.markup.slice(index + 1));
       baseLine.editSelected = false;
     }
 
