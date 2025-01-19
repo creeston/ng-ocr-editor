@@ -1,13 +1,12 @@
-<h1 align="center">Angular OCR Editor</h1>
+<h1 align="center">Angular OCR Results Editor</h1>
 
-<p align="center">Allows to edit and view OCR image data in UI.</p>
+<p align="center">Angular component that allows to edit and view OCR results data in UI.</p>
 
 
-[![npm](https://img.shields.io/badge/demo-online-ed1c46.svg)](https://creeston.github.io/ng-ocr-editor)
+[![npm](https://img.shields.io/badge/demo-online-008000.svg)](https://creeston.github.io/ng-ocr-editor)
 [![npm](https://img.shields.io/npm/v/ng-ocr-editor)](https://www.npmjs.com/package/ng-ocr-editor)
 [![npm](https://img.shields.io/npm/l/express.svg?maxAge=2592000)](/LICENSE)
 
-<!-- [![npm](https://img.shields.io/badge/stackblitz-online-orange.svg)](https://stackblitz.com/edit/ng-ocr-editor) -->
 ___
 
 ## Usage
